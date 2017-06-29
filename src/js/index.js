@@ -33,16 +33,16 @@ let updatePOIToMaps = function(filteredPOI) {
   ko.utils.arrayForEach(
     filteredPOI,
     poi => {
-      if (markers.get(poi.id) !== undefined) {
+      if (markers.get(poi.data.id) !== undefined) {
         // marker already created for id, just set existing marker to visible
-        markers.get(poi.id).setMap(map);
+        markers.get(poi.data.id).setMap(map);
       } else {
         markers.set(
-          poi.id,
+          poi.data.id,
           new google.maps.Marker({
-            position: poi.latlong,
+            position: poi.data.latlong,
             map: map,
-            title: poi.title
+            title: poi.data.title
           })
         );
       }
@@ -57,7 +57,7 @@ let updatePOIToMaps = function(filteredPOI) {
  */
 let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
-  updatePOIToMaps(selectedPOI);
+  markers.get(selectedPOI.data.id).setAnimation(google.maps.Animation.DROP);
 };
 
 /**
