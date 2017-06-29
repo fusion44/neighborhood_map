@@ -1,5 +1,6 @@
 exports.locations = [
   {
+    id: 1,
     latlong: {
       lat: 47.557604,
       lng: 10.749799
@@ -7,6 +8,7 @@ exports.locations = [
     title: "Schloss Neuschwanstein"
   },
   {
+    id: 2,
     latlong: {
       lat: 50.941265,
       lng: 6.958271
@@ -14,6 +16,7 @@ exports.locations = [
     title: "Kölner Dom"
   },
   {
+    id: 3,
     latlong: {
       lat: 52.516275,
       lng: 13.377699
@@ -21,6 +24,7 @@ exports.locations = [
     title: "Brandenburger Tor"
   },
   {
+    id: 4,
     latlong: {
       lat: 50.961912,
       lng: 14.073188
@@ -28,6 +32,7 @@ exports.locations = [
     title: "Basteigebiet"
   },
   {
+    id: 5,
     latlong: {
       lat: 47.870997,
       lng: 12.453865
@@ -35,6 +40,7 @@ exports.locations = [
     title: "Chiemsee"
   },
   {
+    id: 6,
     latlong: {
       lat: 53.57803,
       lng: 6.949848
@@ -42,6 +48,7 @@ exports.locations = [
     title: "Wattenmeer"
   },
   {
+    id: 7,
     latlong: {
       lat: 51.749997,
       lng: 10.633354
@@ -49,6 +56,7 @@ exports.locations = [
     title: "Harz"
   },
   {
+    id: 8,
     latlong: {
       lat: 48.138624,
       lng: 11.573628
@@ -56,6 +64,7 @@ exports.locations = [
     title: "Frauenkirche"
   },
   {
+    id: 9,
     latlong: {
       lat: 47.421048,
       lng: 10.985397
