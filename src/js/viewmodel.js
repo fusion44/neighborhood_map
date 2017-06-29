@@ -8,6 +8,7 @@ var POI = function(data) {
 
 exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   self = this;
+  self.showMenu = ko.observable(true);
   self.poiFilter = ko.observable("");
   self.availablePOI = new Map();
   self.filteredPOI = ko.observableArray([]);
@@ -34,6 +35,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
 
   // react to changed to the filter input
   self.poiFilter.subscribe(newValue => {
+    if (!self.showMenu()) self.toggleMenu();
+
     self.filteredPOI.removeAll();
     poi.locations.forEach(p => {
       if (p.title.toLowerCase().includes(newValue.toLowerCase())) {
@@ -45,4 +48,9 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
     if (self.onPOIFilterChanged !== undefined)
       self.onPOIFilterChanged(self.filteredPOI());
   });
+
+  self.toggleMenu = () => {
+    console.log("toggle");
+    self.showMenu(!self.showMenu());
+  };
 };
