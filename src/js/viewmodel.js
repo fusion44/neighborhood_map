@@ -12,6 +12,14 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   self.poiFilter = ko.observable("");
   self.availablePOI = new Map();
   self.filteredPOI = ko.observableArray([]);
+
+  // Wikipedia POI info
+  self.showPOIInfo = ko.observable(false);
+  self.showPOIInfoTitle = ko.observable("");
+  self.showPOIInfoImage = ko.observable("");
+  self.showPOIInfoLongText = ko.observable("");
+  self.showPOIInfoWikipedialink = ko.observable("");
+
   poi.locations.forEach(p => {
     let nPOI = new POI(p);
     self.availablePOI.set(p.id, nPOI);
@@ -29,8 +37,31 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   self.focusPOI = function() {
     for (let poi of self.availablePOI.values()) poi.selected(false);
     this.selected(true);
+    self.currentSelectedPOI = this;
 
+    // notify a possible listener of the POI selection
     if (self.onPOISelected !== undefined) self.onPOISelected(this);
+
+    self.showPOIInfoImage(this.data.wikipedia_img);
+
+    // get Wikipedia entry extract
+    // https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bextracts
+    $.getJSON(
+      "http://de.wikipedia.org/w/api.php?action=query&format=json&callback=?",
+      { titles: this.data.wikipedia, prop: "extracts", exchars: "175" },
+      function(data) {
+        let page = data.query.pages[Object.keys(data.query.pages)[0]];
+        self.showPOIInfo(true);
+        self.menuShownBeforePOIInfo = self.showMenu();
+        self.showMenu(false);
+        self.showPOIInfoTitle(page.title);
+        $(".card-text").replaceWith(page.extract);
+        self.showPOIInfoWikipedialink(
+          "http://de.wikipedia.org/wiki/" +
+            self.currentSelectedPOI.data.wikipedia
+        );
+      }
+    );
   };
 
   // react to changed to the filter input
@@ -50,7 +81,17 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   });
 
   self.toggleMenu = () => {
-    console.log("toggle");
     self.showMenu(!self.showMenu());
+  };
+
+  self.toggleInfoWindow = () => {
+    if (self.showPOIInfo()) {
+      // close since we already on screen
+      self.showPOIInfo(false);
+      self.showMenu(self.menuShownBeforePOIInfo);
+    } else {
+      self.showPOIInfo(true);
+      self.showMenu(false);
+    }
   };
 };
