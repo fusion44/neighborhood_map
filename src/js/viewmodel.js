@@ -26,42 +26,29 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
     self.filteredPOI.push(nPOI);
   });
 
-  self.setCallbacks = function(onPOISelectedCB, onPOIFilterChangedCB) {
+  self.setCallbacks = function(
+    onPOISelectedCB,
+    onPOIFilterChangedCB,
+    onResetZoomCB
+  ) {
     self.onPOISelected = onPOISelectedCB;
     self.onPOIFilterChanged = onPOIFilterChangedCB;
+    self.onResetZoom = onResetZoomCB;
 
     // call POI filter on start up, to initialize the maps
     self.onPOIFilterChanged(self.filteredPOI());
   };
 
+  self.focusPOIFromMarker = function(id) {
+    self.fillInfoWindow(self.availablePOI.get(id));
+  };
+
+  // focus from html list
   self.focusPOI = function() {
-    for (let poi of self.availablePOI.values()) poi.selected(false);
-    this.selected(true);
-    self.currentSelectedPOI = this;
+    self.fillInfoWindow(this);
 
     // notify a possible listener of the POI selection
     if (self.onPOISelected !== undefined) self.onPOISelected(this);
-
-    self.showPOIInfoImage(this.data.wikipedia_img);
-
-    // get Wikipedia entry extract
-    // https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bextracts
-    $.getJSON(
-      "http://de.wikipedia.org/w/api.php?action=query&format=json&callback=?",
-      { titles: this.data.wikipedia, prop: "extracts", exchars: "175" },
-      function(data) {
-        let page = data.query.pages[Object.keys(data.query.pages)[0]];
-        self.showPOIInfo(true);
-        self.menuShownBeforePOIInfo = self.showMenu();
-        self.showMenu(false);
-        self.showPOIInfoTitle(page.title);
-        $(".card-text").replaceWith(page.extract);
-        self.showPOIInfoWikipedialink(
-          "http://de.wikipedia.org/wiki/" +
-            self.currentSelectedPOI.data.wikipedia
-        );
-      }
-    );
   };
 
   // react to changed to the filter input
@@ -81,6 +68,7 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   });
 
   self.toggleMenu = () => {
+    if (self.showPOIInfo()) self.toggleInfoWindow();
     self.showMenu(!self.showMenu());
   };
 
@@ -89,9 +77,40 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
       // close since we already on screen
       self.showPOIInfo(false);
       self.showMenu(self.menuShownBeforePOIInfo);
+      if (self.onResetZoom !== undefined) self.onResetZoom();
     } else {
       self.showPOIInfo(true);
       self.showMenu(false);
     }
+  };
+
+  self.fillInfoWindow = p => {
+    self.currentSelectedPOI = p;
+    for (let poi of self.availablePOI.values()) poi.selected(false);
+
+    self.showPOIInfoImage(self.currentSelectedPOI.data.wikipedia_img);
+
+    // get Wikipedia entry extract
+    // https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bextracts
+    $.getJSON(
+      "http://de.wikipedia.org/w/api.php?action=query&format=json&callback=?",
+      {
+        titles: self.currentSelectedPOI.data.wikipedia,
+        prop: "extracts",
+        exchars: "175"
+      },
+      function(data) {
+        let page = data.query.pages[Object.keys(data.query.pages)[0]];
+        self.showPOIInfo(true);
+        self.menuShownBeforePOIInfo = self.showMenu();
+        self.showMenu(false);
+        self.showPOIInfoTitle(page.title);
+        $(".card-text").replaceWith(page.extract);
+        self.showPOIInfoWikipedialink(
+          "http://de.wikipedia.org/wiki/" +
+            self.currentSelectedPOI.data.wikipedia
+        );
+      }
+    );
   };
 };

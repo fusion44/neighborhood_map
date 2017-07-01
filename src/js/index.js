@@ -19,7 +19,11 @@ loadGoogleMapsApi()
     });
 
     // Set callbacks once the map is ready for action
-    vmodel.setCallbacks(selectionChangedCallback, filterChangedCallback);
+    vmodel.setCallbacks(
+      selectionChangedCallback,
+      filterChangedCallback,
+      resetZoomCallback
+    );
   })
   .catch(function(err) {
     console.log(err);
@@ -37,14 +41,19 @@ let updatePOIToMaps = function(filteredPOI) {
         // marker already created for id, just set existing marker to visible
         markers.get(poi.data.id).setMap(map);
       } else {
-        markers.set(
-          poi.data.id,
-          new google.maps.Marker({
-            position: poi.data.latlong,
-            map: map,
-            title: poi.data.title
-          })
-        );
+        let marker = new google.maps.Marker({
+          position: poi.data.latlong,
+          map: map,
+          title: poi.data.title
+        });
+
+        marker.addListener("click", function() {
+          map.setCenter(marker.getPosition());
+          map.setZoom(15);
+          vmodel.focusPOIFromMarker(poi.data.id);
+        });
+
+        markers.set(poi.data.id, marker);
       }
     },
     this
@@ -58,6 +67,7 @@ let updatePOIToMaps = function(filteredPOI) {
 let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
   markers.get(selectedPOI.data.id).setAnimation(google.maps.Animation.DROP);
+  map.setCenter(marker.getPosition());
 };
 
 /**
@@ -67,6 +77,11 @@ let selectionChangedCallback = function(selectedPOI) {
 let filterChangedCallback = function(filteredPOI) {
   // POI filter changed ==> adjust the map
   updatePOIToMaps(filteredPOI);
+};
+
+let resetZoomCallback = () => {
+  map.setZoom(6);
+  map.setCenter({ lat: 51, lng: 9 });
 };
 
 let vmodel = new vm.POIViewModel();
