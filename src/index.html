@@ -36,15 +36,27 @@
             </div>
 
             <div id="poi_info_card" class="card" data-bind="visible: showPOIInfo">
+                <div role="group" class="btn-toolbar justify-content-between" aria-label="Navigation button group">
+                    <div class="btn-group" role="group" aria-label="Nav group">
+                        <button id="close_button" type="button" class="btn btn-secondary" data-bind="click: toggleInfoWindow">
+                            <img src="./icons/ic_close_black_24dp_1x.png" alt="">
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Close group">
+                        <button id="prev_button" type="button" class="btn btn-secondary" data-bind="click: navigatePrevious">
+                            <img src="./icons/ic_navigate_before_black_24dp_1x.png" alt="">
+                        </button>
+                        <button id="next_button" type="button" class="btn btn-secondary" data-bind="click: navigateNext">
+                            <img src="./icons/ic_navigate_next_black_24dp_1x.png" alt="">
+                        </button>
+                    </div>
+                </div>
                 <img class=" card-img-top " src="" alt="Card image cap" data-bind="attr: { src: showPOIInfoImage }">
                 <div class="card-block">
                     <h4 class="card-title" data-bind="text: showPOIInfoTitle">Card title</h4>
                     <div class="card-text"></div>
                     <!--p class="card-text" data-bind="text: showPOIInfoLongText"></p-->
                     <a target="_blank" href="#" data-bind="attr: {href: showPOIInfoWikipedialink}">Wikipedia</a>
-                    <button id="close_button" type="button" class="input-group-addon btn btn-primary" data-bind="click: toggleInfoWindow">
-                        <img src="./icons/ic_close_black_24dp_1x.png" alt="">
-                    </button>
                 </div>
             </div>
             <div class="alert alert-info" role="alert" data-bind="visible: showPOIInfoLoading">

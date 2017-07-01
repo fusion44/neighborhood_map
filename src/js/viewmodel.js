@@ -87,6 +87,27 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
     }
   };
 
+  self.navigatePrevious = () => {
+    let nextId = self.currentSelectedPOI.data.id - 1;
+    if (nextId < 0) nextId = self.availablePOI.size - 1;
+
+    self.fillInfoWindow(self.availablePOI.get(nextId));
+
+    // notify a possible listener of the POI selection
+    if (self.onPOISelected !== undefined)
+      self.onPOISelected(self.currentSelectedPOI);
+  };
+
+  self.navigateNext = () => {
+    let nextId = self.currentSelectedPOI.data.id + 1;
+    if (nextId > self.availablePOI.size - 1) nextId = 0;
+
+    self.fillInfoWindow(self.availablePOI.get(nextId));
+
+    // notify a possible listener of the POI selection
+    if (self.onPOISelected !== undefined)
+      self.onPOISelected(self.currentSelectedPOI);
+  };
   self.fillInfoWindow = p => {
     self.showPOIInfoLoading(true);
 
