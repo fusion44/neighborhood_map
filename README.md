@@ -5,6 +5,12 @@ Author: Stefan Stammberger
 Install nodejs and npm
 
 Run commands:
-* npm install
-* npm run dev-server
-* Open http://localhost:9000/ in a browser
+* Dev Server
+    * npm install
+    * npm run dev-server
+    * Open http://localhost:9000/ in a browser
+
+* Minified Build
+    * npm install
+    * npm run build
+    * open ./dist/index.html in your favorite browser
