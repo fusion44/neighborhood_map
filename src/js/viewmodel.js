@@ -19,6 +19,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   self.showPOIInfoImage = ko.observable("");
   self.showPOIInfoLongText = ko.observable("");
   self.showPOIInfoWikipedialink = ko.observable("");
+  self.showPOIInfoLoading = ko.observable(false);
+  self.showPOIInfoError = ko.observable(false);
 
   poi.locations.forEach(p => {
     let nPOI = new POI(p);
@@ -73,10 +75,11 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   };
 
   self.toggleInfoWindow = () => {
-    if (self.showPOIInfo()) {
+    if (self.showPOIInfo() || self.showPOIInfoError()) {
       // close since we already on screen
       self.showPOIInfo(false);
       self.showMenu(self.menuShownBeforePOIInfo);
+      self.showPOIInfoError(false);
       if (self.onResetZoom !== undefined) self.onResetZoom();
     } else {
       self.showPOIInfo(true);
@@ -85,10 +88,15 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
   };
 
   self.fillInfoWindow = p => {
+    self.showPOIInfoLoading(true);
+
     self.currentSelectedPOI = p;
     for (let poi of self.availablePOI.values()) poi.selected(false);
 
     self.showPOIInfoImage(self.currentSelectedPOI.data.wikipedia_img);
+
+    self.menuShownBeforePOIInfo = self.showMenu();
+    self.showMenu(false);
 
     // get Wikipedia entry extract
     // https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bextracts
@@ -100,10 +108,11 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
         exchars: "175"
       },
       function(data) {
-        let page = data.query.pages[Object.keys(data.query.pages)[0]];
+        self.showPOIInfoLoading(false);
+        self.showPOIInfoError(false);
         self.showPOIInfo(true);
-        self.menuShownBeforePOIInfo = self.showMenu();
-        self.showMenu(false);
+
+        let page = data.query.pages[Object.keys(data.query.pages)[0]];
         self.showPOIInfoTitle(page.title);
         $(".card-text").empty();
         $(".card-text").append(page.extract);
@@ -112,6 +121,10 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
             self.currentSelectedPOI.data.wikipedia
         );
       }
-    );
+    ).fail(function() {
+      self.showPOIInfoLoading(false);
+      self.showMenu(false);
+      self.showPOIInfoError(true);
+    });
   };
 };

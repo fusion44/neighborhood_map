@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Neighborhood Map</title>
     <style>
@@ -37,7 +37,7 @@
 
             <div id="poi_info_card" class="card" data-bind="visible: showPOIInfo">
                 <img class=" card-img-top " src="" alt="Card image cap" data-bind="attr: { src: showPOIInfoImage }">
-                <div class="card-block ">
+                <div class="card-block">
                     <h4 class="card-title" data-bind="text: showPOIInfoTitle">Card title</h4>
                     <div class="card-text"></div>
                     <!--p class="card-text" data-bind="text: showPOIInfoLongText"></p-->
@@ -46,6 +46,15 @@
                         <img src="./icons/ic_close_black_24dp_1x.png" alt="">
                     </button>
                 </div>
+            </div>
+            <div class="alert alert-info" role="alert" data-bind="visible: showPOIInfoLoading">
+                <strong>Heads up!</strong> Loading data...
+            </div>
+            <div class="alert alert-danger" role="alert" data-bind="visible: showPOIInfoError">
+                <strong>Oh snap!</strong> Error retrieving data from Wikipedia. Please try again later.
+                <button id="close_button" type="button" class="input-group-addon btn btn-primary" data-bind="click: toggleInfoWindow">
+                    <img src="./icons/ic_close_black_24dp_1x.png" alt="">
+                </button>
             </div>
 
             <div id="poi-list " class="list-group " data-bind="foreach: filteredPOI, visible: showMenu ">

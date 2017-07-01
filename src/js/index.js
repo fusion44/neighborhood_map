@@ -27,6 +27,7 @@ loadGoogleMapsApi()
   })
   .catch(function(err) {
     console.log(err);
+    alert("Error initializing Google Maps!");
   });
 
 let updatePOIToMaps = function(filteredPOI) {
