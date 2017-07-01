@@ -7,7 +7,7 @@ var loadGoogleMapsApi = require("load-google-maps-api-2");
 loadGoogleMapsApi.key = keys.mapsAPIKey;
 
 let map = undefined;
-let markers = new Map();
+let markers = {};
 
 // loads asynchronously
 loadGoogleMapsApi()
@@ -31,16 +31,18 @@ loadGoogleMapsApi()
   });
 
 let updatePOIToMaps = function(filteredPOI) {
-  for (let m of markers.values()) {
-    m.setMap(null);
+  for (let key in markers) {
+    if (markers.hasOwnProperty(key)) {
+      markers[key].setMap(null);
+    }
   }
 
   ko.utils.arrayForEach(
     filteredPOI,
     poi => {
-      if (markers.get(poi.data.id) !== undefined) {
+      if (markers[poi.data.id] !== undefined) {
         // marker already created for id, just set existing marker to visible
-        markers.get(poi.data.id).setMap(map);
+        markers[poi.data.id].setMap(map);
       } else {
         let marker = new google.maps.Marker({
           position: poi.data.latlong,
@@ -54,7 +56,7 @@ let updatePOIToMaps = function(filteredPOI) {
           vmodel.focusPOIFromMarker(poi.data.id);
         });
 
-        markers.set(poi.data.id, marker);
+        markers[poi.data.id] = marker;
       }
     },
     this
@@ -67,8 +69,8 @@ let updatePOIToMaps = function(filteredPOI) {
  */
 let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
-  markers.get(selectedPOI.data.id).setAnimation(google.maps.Animation.DROP);
-  map.setCenter(markers.get(selectedPOI.data.id).getPosition());
+  markers[selectedPOI.data.id].setAnimation(google.maps.Animation.DROP);
+  map.setCenter(markers[selectedPOI.data.id].getPosition());
 };
 
 /**
