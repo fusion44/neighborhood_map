@@ -9,15 +9,16 @@ loadGoogleMapsApi.key = keys.mapsAPIKey;
 let map = undefined;
 let markers = {};
 let info_windows = {};
+let mapsOptions = {
+  zoom: 6,
+  center: { lat: 51, lng: 9 }, // Germany
+  disableDefaultUI: true
+};
 
 // loads asynchronously
 loadGoogleMapsApi()
   .then(function(googleMaps) {
-    map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 6,
-      center: { lat: 51, lng: 9 },
-      disableDefaultUI: true
-    });
+    map = new google.maps.Map(document.getElementById("map"), mapsOptions);
 
     // Set callbacks once the map is ready for action
     vmodel.setCallbacks(
@@ -53,7 +54,6 @@ let updatePOIToMaps = function(filteredPOI) {
 
         marker.addListener("click", function() {
           map.setCenter(marker.getPosition());
-          map.setZoom(15);
           showInfoWindow(poi.data.id);
           vmodel.focusPOIFromMarker(poi.data.id);
         });
@@ -91,7 +91,7 @@ let filterChangedCallback = function(filteredPOI) {
 };
 
 let resetZoomCallback = () => {
-  map.setZoom(6);
+  map.setZoom(mapsOptions.zoom);
   map.setCenter({ lat: 51, lng: 9 });
 };
 
