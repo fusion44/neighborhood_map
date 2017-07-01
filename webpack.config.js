@@ -2,6 +2,11 @@ var path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+/**
+ * Note to self: Awesome video tutorial about webpack by Acemind
+ * https://www.youtube.com/watch?v=8vnkM8JgjpU
+ */
+
 module.exports = {
   entry: ["bootstrap-loader", "./src/js/index.js"],
   output: {
@@ -9,17 +14,17 @@ module.exports = {
     path: path.resolve(__dirname, "dist")
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
-        query: {
-          presets: ["es2015"]
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["es2015"]
+          }
         }
-      }
-    ],
-    rules: [
+      },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
@@ -57,6 +62,9 @@ module.exports = {
       Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
       Util: "exports-loader?Util!bootstrap/js/dist/util"
     }),
-    new CopyWebpackPlugin([{ from: "./src/index.html", to: "index.html" }])
+    new CopyWebpackPlugin([
+      { from: "./src/index.html", to: "index.html" },
+      { from: "./src/icons", to: "icons" }
+    ])
   ]
 };
