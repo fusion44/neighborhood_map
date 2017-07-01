@@ -8,6 +8,7 @@ loadGoogleMapsApi.key = keys.mapsAPIKey;
 
 let map = undefined;
 let markers = {};
+let info_windows = {};
 
 // loads asynchronously
 loadGoogleMapsApi()
@@ -53,10 +54,16 @@ let updatePOIToMaps = function(filteredPOI) {
         marker.addListener("click", function() {
           map.setCenter(marker.getPosition());
           map.setZoom(15);
+          showInfoWindow(poi.data.id);
           vmodel.focusPOIFromMarker(poi.data.id);
         });
 
+        let info_window = new google.maps.InfoWindow({
+          content: "<h3>" + poi.data.title + "</h3>"
+        });
+
         markers[poi.data.id] = marker;
+        info_windows[poi.data.id] = info_window;
       }
     },
     this
@@ -71,6 +78,7 @@ let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
   markers[selectedPOI.data.id].setAnimation(google.maps.Animation.DROP);
   map.setCenter(markers[selectedPOI.data.id].getPosition());
+  showInfoWindow(selectedPOI.data.id);
 };
 
 /**
@@ -85,6 +93,16 @@ let filterChangedCallback = function(filteredPOI) {
 let resetZoomCallback = () => {
   map.setZoom(6);
   map.setCenter({ lat: 51, lng: 9 });
+};
+
+let showInfoWindow = id => {
+  for (let key in info_windows) {
+    if (info_windows.hasOwnProperty(key)) {
+      info_windows[key].close();
+    }
+  }
+
+  info_windows[id].open(map, markers[id]);
 };
 
 let vmodel = new vm.POIViewModel();
