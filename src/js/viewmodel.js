@@ -105,7 +105,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
         self.menuShownBeforePOIInfo = self.showMenu();
         self.showMenu(false);
         self.showPOIInfoTitle(page.title);
-        $(".card-text").replaceWith(page.extract);
+        $(".card-text").empty();
+        $(".card-text").append(page.extract);
         self.showPOIInfoWikipedialink(
           "http://de.wikipedia.org/wiki/" +
             self.currentSelectedPOI.data.wikipedia

@@ -67,7 +67,7 @@ let updatePOIToMaps = function(filteredPOI) {
 let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
   markers.get(selectedPOI.data.id).setAnimation(google.maps.Animation.DROP);
-  map.setCenter(marker.getPosition());
+  map.setCenter(markers.get(selectedPOI.data.id).getPosition());
 };
 
 /**
