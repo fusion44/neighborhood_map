@@ -96,6 +96,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
     // notify a possible listener of the POI selection
     if (self.onPOISelected !== undefined)
       self.onPOISelected(self.currentSelectedPOI);
+
+    self.poiFilter("");
   };
 
   self.navigateNext = () => {
@@ -107,6 +109,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
     // notify a possible listener of the POI selection
     if (self.onPOISelected !== undefined)
       self.onPOISelected(self.currentSelectedPOI);
+
+    self.poiFilter("");
   };
   self.fillInfoWindow = p => {
     self.showPOIInfoLoading(true);
