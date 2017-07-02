@@ -43,6 +43,8 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
 
   self.focusPOIFromMarker = function(id) {
     self.fillInfoWindow(self.availablePOI.get(id));
+    if (self.onPOISelected !== undefined)
+      self.onPOISelected(self.availablePOI.get(id));
   };
 
   // focus from html list

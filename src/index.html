@@ -6,27 +6,15 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Neighborhood Map</title>
-    <style>
-        #map {
-            height: 100%;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
 </head>
 
 <body>
-    <div id="map"></div>
+    <main id="map"></main>
 
-    <div id="over_map">
+    <nav id="over_map">
         <div class="container-fluid">
             <div class="input-group">
-                <input type="text" class="form-control" data-bind="textInput: poiFilter" />
+                <input type="text" class="form-control" data-bind="textInput: poiFilter">
                 <span class="input-group-addon">
                     <img src="./icons/ic_search_black_24dp_1x.png" alt="">
                 </span>
@@ -35,7 +23,7 @@
                 </button>
             </div>
 
-            <div id="poi_info_card" class="card" data-bind="visible: showPOIInfo">
+            <article id="poi_info_card" class="card" data-bind="visible: showPOIInfo">
                 <div role="group" class="btn-toolbar justify-content-between" aria-label="Navigation button group">
                     <div class="btn-group" role="group" aria-label="Nav group">
                         <button id="close_button" type="button" class="btn btn-secondary" data-bind="click: toggleInfoWindow">
@@ -55,25 +43,27 @@
                 <div class="card-block">
                     <h4 class="card-title" data-bind="text: showPOIInfoTitle">Card title</h4>
                     <p class="card-text" data-bind="html: showPOIInfoLongText"></p>
-                    <a target="_blank" href="#" data-bind="attr: {href: showPOIInfoWikipedialink}">Wikipedia</a>
+
+                    Provided by <a target="_blank" href="#" data-bind="attr: {href: showPOIInfoWikipedialink}">Wikipedia (full article)</a>
                 </div>
-            </div>
+            </article>
             <div class="alert alert-info" role="alert" data-bind="visible: showPOIInfoLoading">
                 <strong>Heads up!</strong> Loading data...
             </div>
             <div class="alert alert-danger" role="alert" data-bind="visible: showPOIInfoError">
                 <strong>Oh snap!</strong> Error retrieving data from Wikipedia. Please try again later.
-                <button id="close_button" type="button" class="input-group-addon btn btn-primary" data-bind="click: toggleInfoWindow">
+                <button id="alert_close_button" type="button" class="input-group-addon btn btn-primary" data-bind="click: toggleInfoWindow">
                     <img src="./icons/ic_close_black_24dp_1x.png" alt="">
                 </button>
             </div>
 
             <div id="poi-list " class="list-group " data-bind="foreach: filteredPOI, visible: showMenu ">
-                <a href="# " class="list-group-item list-group-item-action active " data-bind="text: data.title, click:
+                <a href="#" class="list-group-item list-group-item-action active " data-bind="text: data.title, click:
                 $parent.focusPOI, css: { active: selected } "></a>
+
             </div>
         </div>
-    </div>
+    </nav>
 
     <script async src="bundle.js "></script>
 </body>

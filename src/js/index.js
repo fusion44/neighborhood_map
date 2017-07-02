@@ -8,7 +8,8 @@ loadGoogleMapsApi.key = keys.mapsAPIKey;
 
 let map = undefined;
 let markers = {};
-let info_windows = {};
+let infoWindow = undefined;
+let infoWindowContents = {};
 let mapsOptions = {
   zoom: 6,
   center: { lat: 51, lng: 9 }, // Germany
@@ -26,6 +27,7 @@ loadGoogleMapsApi()
       filterChangedCallback,
       resetZoomCallback
     );
+    infoWindow = new google.maps.InfoWindow();
   })
   .catch(function(err) {
     console.log(err);
@@ -34,8 +36,10 @@ loadGoogleMapsApi()
 
 let updatePOIToMaps = function(filteredPOI) {
   for (let key in markers) {
+    // Not possible to use forEach(), since this is an object
+    // Possible alternative is to use a Map() from ES6
     if (markers.hasOwnProperty(key)) {
-      markers[key].setMap(null);
+      markers[key].setVisible(false);
     }
   }
 
@@ -44,7 +48,7 @@ let updatePOIToMaps = function(filteredPOI) {
     poi => {
       if (markers[poi.data.id] !== undefined) {
         // marker already created for id, just set existing marker to visible
-        markers[poi.data.id].setMap(map);
+        markers[poi.data.id].setVisible(true);
       } else {
         let marker = new google.maps.Marker({
           position: poi.data.latlong,
@@ -53,17 +57,14 @@ let updatePOIToMaps = function(filteredPOI) {
         });
 
         marker.addListener("click", function() {
-          map.setCenter(marker.getPosition());
+          // Note, there is a DROP animation triggered in selectionChangedCallback
+          map.panTo(marker.getPosition());
           showInfoWindow(poi.data.id);
           vmodel.focusPOIFromMarker(poi.data.id);
         });
 
-        let info_window = new google.maps.InfoWindow({
-          content: "<h3>" + poi.data.title + "</h3>"
-        });
-
         markers[poi.data.id] = marker;
-        info_windows[poi.data.id] = info_window;
+        infoWindowContents[poi.data.id] = poi.data.title;
       }
     },
     this
@@ -77,7 +78,7 @@ let updatePOIToMaps = function(filteredPOI) {
 let selectionChangedCallback = function(selectedPOI) {
   // A new POI was selected ==> reframe the map
   markers[selectedPOI.data.id].setAnimation(google.maps.Animation.DROP);
-  map.setCenter(markers[selectedPOI.data.id].getPosition());
+  map.panTo(markers[selectedPOI.data.id].getPosition());
   showInfoWindow(selectedPOI.data.id);
 };
 
@@ -92,17 +93,12 @@ let filterChangedCallback = function(filteredPOI) {
 
 let resetZoomCallback = () => {
   map.setZoom(mapsOptions.zoom);
-  map.setCenter({ lat: 51, lng: 9 });
+  map.panTo({ lat: 51, lng: 9 });
 };
 
 let showInfoWindow = id => {
-  for (let key in info_windows) {
-    if (info_windows.hasOwnProperty(key)) {
-      info_windows[key].close();
-    }
-  }
-
-  info_windows[id].open(map, markers[id]);
+  infoWindow.setContent(infoWindowContents[id]);
+  infoWindow.open(map, markers[id]);
 };
 
 let vmodel = new vm.POIViewModel();
