@@ -139,8 +139,7 @@ exports.POIViewModel = function(onPOISelectedCB, onPOIFilterChangedCB) {
 
         let page = data.query.pages[Object.keys(data.query.pages)[0]];
         self.showPOIInfoTitle(page.title);
-        $(".card-text").empty();
-        $(".card-text").append(page.extract);
+        self.showPOIInfoLongText(page.extract);
         self.showPOIInfoWikipedialink(
           "http://de.wikipedia.org/wiki/" +
             self.currentSelectedPOI.data.wikipedia
